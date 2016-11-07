@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Ressources/QML/main.qml</file>
+        <file>Ressources/QML/Page1.qml</file>
+        <file>Ressources/QML/Page1Form.ui.qml</file>
+        <file>Ressources/QML/Video.qml</file>
+        <file>Ressources/img/play-icon.png</file>
+        <file>Ressources/img/upload-video.png</file>
+    </qresource>
+</RCC>
