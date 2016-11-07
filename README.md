@@ -4,7 +4,7 @@
 A user interface developped with Qt Quick Controls 2 generating an ffmpeg command to cut a video.
 The purpose of this lab is to have a very user-friendly interface treating all cases.
 
-![alt text](https://github.com/sebastienrichoz/IHM-Labo-02/screenshot.PNG "Screenshot")
+![alt text](https://github.com/sebastienrichoz/IHM-Labo-02/blob/master/screenshot.PNG "Screenshot")
 
 ## What you need to run this project
 
