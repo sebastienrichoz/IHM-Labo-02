@@ -7,7 +7,13 @@ Page1Form {
 
     property int stepSize: 1000
 
+
+    /**
+      * Start and stop spinbox
+      */
+
     spinboxStart.up.onPressedChanged: {
+        console.log("spinboxStart.up.onPressedChanged");
         if (spinboxStart.value + stepSize > video.duration)
             video.seek(video.duration)
         else
@@ -16,6 +22,7 @@ Page1Form {
     }
 
     spinboxStart.down.onPressedChanged: {
+        console.log("spinboxStart.down.onPressedChanged");
         if (spinboxStart.value - stepSize < 0)
             video.seek(0)
         else
@@ -24,6 +31,7 @@ Page1Form {
     }
 
     spinboxStop.up.onPressedChanged: {
+        console.log("spinboxStop.up.onPressedChanged");
         if (spinboxStop.value + stepSize > video.duration)
             video.seek(video.duration)
         else
@@ -32,6 +40,7 @@ Page1Form {
     }
 
     spinboxStop.down.onPressedChanged: {
+        console.log("spinboxStop.down.onPressedChanged");
         if (spinboxStop.value - stepSize < 0)
             video.seek(0)
         else
@@ -39,33 +48,48 @@ Page1Form {
         control.second.value = video.position / video.duration
     }
 
-    control.first.onPressedChanged:   {
-        video.seek(parseInt(control.first.value * video.duration))
-        spinboxStart.value = video.position;
+
+    /**
+      * Cut control
+      */
+
+    control.first.onPressedChanged: {
+        console.log("control.first.onPressedChanged")
+        var pos = parseInt(control.first.value * video.duration)
+        video.seek(pos)
+        spinboxStart.value = pos;
         video.pause()
+        image1.visible = true
     }
+
+    control.second.onPressedChanged: {
+        console.log("control.second.onPressedChanged")
+        video.seek(parseInt(control.second.value * video.duration))
+        spinboxStop.value = video.position;
+        video.pause()
+        image1.visible = true
+    }
+
+
+    /**
+      * Video
+      */
 
     video.onPositionChanged: {
         updateVideoDuration()
         videoPosition.text = msToTime(video.position) + "/" + msToTime(video.duration)
-        console.log("control first value: " + control.first.value)
-        console.log("control second value: " + control.second.value)
-        spinboxStart.value = Math.round(control.first.value * video.duration);
-        spinboxStop.value = Math.round(control.second.value * video.duration);
-    }
-
-    control.second.onPressedChanged: {
-        video.seek(parseInt(control.second.value * video.duration))
-        spinboxStop.value = video.position;
-        video.pause()
     }
 
     mouseArea1.onClicked: {
         if (!video.hasVideo)
             fileDialog.open()
+        else if (video.playbackState === MediaPlayer.PlayingState) {
+            video.pause()
+            image1.visible = true
+        }
         else {
-            video.playbackState == MediaPlayer.PlayingState ? video.pause() : video.play()
-            image1.visible = false;
+            video.play()
+            image1.visible = false
         }
     }
 
