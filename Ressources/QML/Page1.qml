@@ -19,6 +19,7 @@ Page1Form {
         else
             video.seek(spinboxStart.value + stepSize)
         control.first.value = video.position / video.duration
+        updateVideoDuration()
     }
 
     spinboxStart.down.onPressedChanged: {
@@ -28,6 +29,7 @@ Page1Form {
         else
             video.seek(spinboxStart.value - stepSize)
         control.first.value = video.position / video.duration
+        updateVideoDuration()
     }
 
     spinboxStop.up.onPressedChanged: {
@@ -37,6 +39,7 @@ Page1Form {
         else
             video.seek(spinboxStop.value + stepSize)
         control.second.value = video.position / video.duration
+        updateVideoDuration()
     }
 
     spinboxStop.down.onPressedChanged: {
@@ -46,6 +49,7 @@ Page1Form {
         else
             video.seek(spinboxStop.value - stepSize)
         control.second.value = video.position / video.duration
+        updateVideoDuration()
     }
 
 
@@ -60,6 +64,7 @@ Page1Form {
         spinboxStart.value = pos;
         video.pause()
         image1.visible = true
+        updateVideoDuration()
     }
 
     control.second.onPressedChanged: {
@@ -69,6 +74,7 @@ Page1Form {
         spinboxStop.value = pos;
         video.pause()
         image1.visible = true
+        updateVideoDuration()
     }
 
 
@@ -77,11 +83,12 @@ Page1Form {
       */
 
     video.onPositionChanged: {
-        updateVideoDuration()
+        console.log("video.onPositionChanged")
         videoPosition.text = msToTime(video.position) + "/" + msToTime(video.duration)
     }
 
     mouseArea1.onClicked: {
+        console.log("mouseArea1.onClicked")
         if (!video.hasVideo)
             fileDialog.open()
         else if (video.playbackState === MediaPlayer.PlayingState) {
@@ -95,11 +102,12 @@ Page1Form {
     }
 
     button1.onClicked: {
+        console.log("button1.onClicked")
         onClicked: fileDialog.open()
     }
 
     video.onHasVideoChanged: {
-        console.log("yo")
+        console.log("video.onHasVideoChanged")
         videoData.text = "Title: " + video.metaData.title +
                           ". Sample Rate: " + video.metaData.sampleRate + " Hz" +
                           ". Bit Rate: " + video.metaData.videoBitRate + " bit/s" +
@@ -125,6 +133,7 @@ Page1Form {
     }
 
     fileDialog.onAccepted: {
+        console.log("fileDialog.onAccepted")
         image2.visible = false;
         textField1.text = fileDialog.fileUrl
 
@@ -134,7 +143,7 @@ Page1Form {
     }
 
     fileDialog.onRejected: {
-        console.log("Canceled")
+        console.log("fileDialog.onRejected")
     }
 
     function msToTime(duration) {
