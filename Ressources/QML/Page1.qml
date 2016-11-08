@@ -12,6 +12,9 @@ Page1Form {
       * Start and stop spinbox
       */
 
+    // TODO : gérer le problème des spinbox qui se réinitilisent mutuellement
+    // TODO : rendre impossible que la valeur de la spinboxstart soit supérieure à celle de spinboxstop et spinboxstop ne doit pas pouvoir etre inferieur a spinboxstart
+
     spinboxStart.up.onPressedChanged: {
         console.log("spinboxStart.up.onPressedChanged");
         if (spinboxStart.value + stepSize > video.duration)

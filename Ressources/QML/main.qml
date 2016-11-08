@@ -17,6 +17,7 @@ ApplicationWindow {
     property color menuBorderColor: "#282828"
     property double menuBackgroundOpacity: 0.0
 
+    // TODO actions sur les boutons du menu
     header: ToolBar {
         height: 40
 
@@ -57,7 +58,7 @@ ApplicationWindow {
                     id: fileMenu
                     background: Rectangle {
                         implicitWidth: 100
-                        implicitHeight: 80
+                        implicitHeight: 50
                         color: "#4b4b4b"
                         opacity: 0.6
                         layer.enabled: true
@@ -71,10 +72,6 @@ ApplicationWindow {
                         }
                     }
                     y: fileButton.height
-
-                    MenuItem {
-                        text: qsTr("Open...")
-                    }
                     MenuItem {
                         text: qsTr("Exit")
                         onClicked: Qt.quit()
