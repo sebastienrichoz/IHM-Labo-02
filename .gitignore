@@ -36,3 +36,5 @@ Makefile*
 # QtCtreator CMake
 CMakeLists.txt.user
 
+# For Dev purposes only : needed to add this file in my (Sebastien Richoz) project in order to compile it.
+Ressources/QML/Video.qml

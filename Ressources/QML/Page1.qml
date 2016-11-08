@@ -7,74 +7,107 @@ Page1Form {
 
     property int stepSize: 1000
 
+
+    /**
+      * Start and stop spinbox
+      */
+
     spinboxStart.up.onPressedChanged: {
+        console.log("spinboxStart.up.onPressedChanged");
         if (spinboxStart.value + stepSize > video.duration)
             video.seek(video.duration)
         else
             video.seek(spinboxStart.value + stepSize)
         control.first.value = video.position / video.duration
+        updateVideoDuration()
     }
 
     spinboxStart.down.onPressedChanged: {
+        console.log("spinboxStart.down.onPressedChanged");
         if (spinboxStart.value - stepSize < 0)
             video.seek(0)
         else
             video.seek(spinboxStart.value - stepSize)
         control.first.value = video.position / video.duration
+        updateVideoDuration()
     }
 
     spinboxStop.up.onPressedChanged: {
+        console.log("spinboxStop.up.onPressedChanged");
         if (spinboxStop.value + stepSize > video.duration)
             video.seek(video.duration)
         else
             video.seek(spinboxStop.value + stepSize)
         control.second.value = video.position / video.duration
+        updateVideoDuration()
     }
 
     spinboxStop.down.onPressedChanged: {
+        console.log("spinboxStop.down.onPressedChanged");
         if (spinboxStop.value - stepSize < 0)
             video.seek(0)
         else
             video.seek(spinboxStop.value - stepSize)
         control.second.value = video.position / video.duration
-    }
-
-    control.first.onPressedChanged:   {
-        video.seek(parseInt(control.first.value * video.duration))
-        spinboxStart.value = video.position;
-        video.pause()
-    }
-
-    video.onPositionChanged: {
         updateVideoDuration()
-        videoPosition.text = msToTime(video.position) + "/" + msToTime(video.duration)
-        console.log("control first value: " + control.first.value)
-        console.log("control second value: " + control.second.value)
-        spinboxStart.value = Math.round(control.first.value * video.duration);
-        spinboxStop.value = Math.round(control.second.value * video.duration);
+    }
+
+
+    /**
+      * Cut control
+      */
+
+    control.first.onPressedChanged: {
+        console.log("control.first.onPressedChanged")
+        var pos = parseInt(control.first.value * video.duration)
+        video.seek(pos)
+        spinboxStart.value = pos;
+        video.pause()
+        image1.visible = true
+        updateVideoDuration()
     }
 
     control.second.onPressedChanged: {
-        video.seek(parseInt(control.second.value * video.duration))
-        spinboxStop.value = video.position;
+        console.log("control.second.onPressedChanged")
+        var pos = parseInt(control.second.value * video.duration)
+        video.seek(pos)
+        spinboxStop.value = pos;
         video.pause()
+        image1.visible = true
+        updateVideoDuration()
+    }
+
+
+    /**
+      * Video
+      */
+
+    video.onPositionChanged: {
+        console.log("video.onPositionChanged")
+        videoPosition.text = msToTime(video.position) + "/" + msToTime(video.duration)
     }
 
     mouseArea1.onClicked: {
+        console.log("mouseArea1.onClicked")
         if (!video.hasVideo)
             fileDialog.open()
+        else if (video.playbackState === MediaPlayer.PlayingState) {
+            video.pause()
+            image1.visible = true
+        }
         else {
-            video.playbackState == MediaPlayer.PlayingState ? video.pause() : video.play()
-            image1.visible = false;
+            video.play()
+            image1.visible = false
         }
     }
 
     button1.onClicked: {
+        console.log("button1.onClicked")
         onClicked: fileDialog.open()
     }
 
     video.onHasVideoChanged: {
-        console.log("yo")
+        console.log("video.onHasVideoChanged")
         videoData.text = "Title: " + video.metaData.title +
                           ". Sample Rate: " + video.metaData.sampleRate + " Hz" +
                           ". Bit Rate: " + video.metaData.videoBitRate + " bit/s" +
@@ -100,6 +133,7 @@ Page1Form {
     }
 
     fileDialog.onAccepted: {
+        console.log("fileDialog.onAccepted")
         image2.visible = false;
         textField1.text = fileDialog.fileUrl
 
@@ -109,7 +143,7 @@ Page1Form {
     }
 
     fileDialog.onRejected: {
-        console.log("Canceled")
+        console.log("fileDialog.onRejected")
     }
 
     function msToTime(duration) {
