@@ -30,6 +30,55 @@ Item {
         Component.onCompleted: visible = false
     }
 
+//    Item {
+//        id: item2
+//        width: 100
+//        height: 40
+//        anchors.left: parent.left
+//        anchors.leftMargin: 0
+//        anchors.top: parent.top
+//        anchors.topMargin: 0
+
+//        Button {
+//            id: fileButton
+//            width: 100
+//            height: 40
+//            text: qsTr("File")
+//            anchors.fill: parent
+//            Layout.columnSpan: 1
+//            Layout.rowSpan: 1
+//            Layout.maximumHeight: 100
+//            Layout.maximumWidth: 100
+//            Layout.fillWidth: true
+//            rightPadding: 8
+//            Layout.fillHeight: true
+//        }
+//    }
+//    Item {
+//        id: item3
+//        width: 100
+//        height: 40
+//        anchors.left: item2.right
+//        anchors.leftMargin: 0
+//        anchors.top: parent.top
+//        anchors.topMargin: 0
+
+//        Button {
+//            id: helpButton
+//            text: qsTr("Help")
+//            anchors.fill: parent
+//            Layout.columnSpan: 1
+//            Layout.rowSpan: 1
+//            Layout.maximumHeight: 100
+//            Layout.maximumWidth: 100
+//            spacing: 0
+//            leftPadding: 8
+//            checkable: false
+//            Layout.fillWidth: true
+//            Layout.fillHeight: true
+//        }
+//    }
+
     ColumnLayout {
         id: columnLayout1
         anchors.rightMargin: 40
@@ -263,7 +312,5 @@ Item {
             anchors.horizontalCenter: item1.horizontalCenter
             font.pixelSize: 16
         }
-
-
     }
 }
