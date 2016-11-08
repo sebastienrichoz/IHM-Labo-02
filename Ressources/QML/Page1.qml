@@ -64,8 +64,9 @@ Page1Form {
 
     control.second.onPressedChanged: {
         console.log("control.second.onPressedChanged")
-        video.seek(parseInt(control.second.value * video.duration))
-        spinboxStop.value = video.position;
+        var pos = parseInt(control.second.value * video.duration)
+        video.seek(pos)
+        spinboxStop.value = pos;
         video.pause()
         image1.visible = true
     }
