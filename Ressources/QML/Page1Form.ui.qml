@@ -15,11 +15,14 @@ Item {
     property alias mouseArea1: mouseArea1
     property alias video: video
     property alias fileDialog: fileDialog
-    property alias videoData: videoData
     property alias videoDuration: videoDuration
     property alias videoPosition: videoPosition
     property alias image1: image1
     property alias image2: image2
+    property alias videoTitle: videoTitle
+    property alias videoSampleRate: videoSampleRate
+    property alias videoBitRate: videoBitRate
+    property alias videoFrameRate: videoFrameRate
 
     FileDialog {
         id: fileDialog
@@ -30,61 +33,12 @@ Item {
         Component.onCompleted: visible = false
     }
 
-//    Item {
-//        id: item2
-//        width: 100
-//        height: 40
-//        anchors.left: parent.left
-//        anchors.leftMargin: 0
-//        anchors.top: parent.top
-//        anchors.topMargin: 0
-
-//        Button {
-//            id: fileButton
-//            width: 100
-//            height: 40
-//            text: qsTr("File")
-//            anchors.fill: parent
-//            Layout.columnSpan: 1
-//            Layout.rowSpan: 1
-//            Layout.maximumHeight: 100
-//            Layout.maximumWidth: 100
-//            Layout.fillWidth: true
-//            rightPadding: 8
-//            Layout.fillHeight: true
-//        }
-//    }
-//    Item {
-//        id: item3
-//        width: 100
-//        height: 40
-//        anchors.left: item2.right
-//        anchors.leftMargin: 0
-//        anchors.top: parent.top
-//        anchors.topMargin: 0
-
-//        Button {
-//            id: helpButton
-//            text: qsTr("Help")
-//            anchors.fill: parent
-//            Layout.columnSpan: 1
-//            Layout.rowSpan: 1
-//            Layout.maximumHeight: 100
-//            Layout.maximumWidth: 100
-//            spacing: 0
-//            leftPadding: 8
-//            checkable: false
-//            Layout.fillWidth: true
-//            Layout.fillHeight: true
-//        }
-//    }
-
     ColumnLayout {
         id: columnLayout1
-        anchors.rightMargin: 40
-        anchors.leftMargin: 40
-        anchors.bottomMargin: 41
-        anchors.topMargin: 40
+        anchors.rightMargin: 30
+        anchors.leftMargin: 30
+        anchors.bottomMargin: 30
+        anchors.topMargin: 30
         anchors.fill: parent
 
         RowLayout {
@@ -96,7 +50,7 @@ Item {
             Layout.rowSpan: 0
             Layout.preferredHeight: -1
             Layout.preferredWidth: -1
-            spacing: 5
+            spacing: 10
             Layout.fillWidth: true
             anchors.horizontalCenterOffset: 0
             anchors.horizontalCenter: parent.horizontalCenter
@@ -105,31 +59,62 @@ Item {
             TextField {
                 id: textField1
                 Layout.fillWidth: true
-                Layout.minimumWidth: 650
+                Layout.minimumWidth: 0
                 placeholderText: qsTr("Enter video filename")
             }
 
             Button {
                 id: button1
                 text: qsTr("Open Video...")
+                Layout.maximumWidth: 150
                 Layout.fillWidth: true
                 autoExclusive: false
             }
         }
 
-        Text {
-            id: videoData
-            width: 780
-            height: 14
-            color: "#8b8b8b"
-            text: qsTr("No video file selected")
-            verticalAlignment: Text.AlignVCenter
-            Layout.preferredHeight: 30
-            Layout.fillHeight: false
-            Layout.fillWidth: true
-            font.pixelSize: 12
-        }
 
+        RowLayout {
+            id: rowLayout4
+            width: 100
+            height: 100
+
+            Text {
+                id: videoTitle
+                width: 780
+                height: 14
+                color: "#8b8b8b"
+                text: qsTr("No video file selected")
+                verticalAlignment: Text.AlignVCenter
+                Layout.preferredHeight: 30
+                Layout.fillHeight: false
+                Layout.fillWidth: true
+                font.pixelSize: 12
+            }
+
+            Text {
+                id: videoBitRate
+                color: "#8b8b8b"
+                text: qsTr("")
+                Layout.fillWidth: true
+                font.pixelSize: 12
+            }
+
+            Text {
+                id: videoFrameRate
+                color: "#8b8b8b"
+                text: qsTr("")
+                Layout.fillWidth: true
+                font.pixelSize: 12
+            }
+
+            Text {
+                id: videoSampleRate
+                color: "#8b8b8b"
+                text: qsTr("")
+                Layout.fillWidth: true
+                font.pixelSize: 12
+            }
+        }
 
         Video {
             id: video
@@ -294,23 +279,47 @@ Item {
 
 
 
-        Button {
-            id: button2
-            text: qsTr("Generate command line")
-            Layout.minimumWidth: 200
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+        RowLayout {
+            id: rowLayout2
+            width: 100
+            height: 100
+            spacing: 10
+
+
+            TextField {
+                id: textField2
+                placeholderText: qsTr("Name of output file")
+                Layout.fillWidth: true
+            }
+
+            Button {
+                id: button3
+                text: qsTr("Select Output File")
+                Layout.minimumWidth: 150
+            }
+
+
         }
+
 
         TextEdit {
             id: textEdit1
             width: 80
             height: 20
-            text: qsTr("command line...")
+            color: "#000000"
+            text: qsTr("$ ffmpeg ... do it dynamically")
+            selectionColor: "#ed0d0d"
+            font.bold: true
             horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             anchors.horizontalCenter: item1.horizontalCenter
             font.pixelSize: 16
         }
+
+
+
+
     }
+
 }

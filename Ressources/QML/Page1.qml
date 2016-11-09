@@ -111,10 +111,11 @@ Page1Form {
 
     video.onHasVideoChanged: {
         console.log("video.onHasVideoChanged")
-        videoData.text = "Title: " + video.metaData.title +
-                          ". Sample Rate: " + video.metaData.sampleRate + " Hz" +
-                          ". Bit Rate: " + video.metaData.videoBitRate + " bit/s" +
-                          ". Frame Rate: " + video.metaData.videoFrameRate + " FPS";
+        videoTitle.text = "Title: " + video.metaData.title;
+        videoSampleRate.text = "Sample Rate: " + video.metaData.sampleRate + " Hz";
+        videoBitRate.text = "Bit Rate: " + video.metaData.videoBitRate + " bit/s";
+        videoFrameRate.text = "Frame Rate: " + video.metaData.videoFrameRate + " FPS";
+
         control.first.value = 0.0;
         control.second.value = 1.0;
         var duration = updateVideoDuration()
