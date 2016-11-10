@@ -7,26 +7,42 @@ import QtQuick.Dialogs 1.2
 
 Item {
     id: item1
-    property alias textField1: textField1
-    property alias button1: button1
     property alias spinboxStart: spinboxStart
     property alias spinboxStop: spinboxStop
     property alias control: control
     property alias mouseArea1: mouseArea1
     property alias video: video
-    property alias fileDialog: fileDialog
+    property alias fileDialogInput: fileDialogInput
+    property alias fileDialogOutput: fileDialogOutput
     property alias videoDuration: videoDuration
     property alias videoPosition: videoPosition
-    property alias image1: image1
-    property alias image2: image2
     property alias videoTitle: videoTitle
     property alias videoSampleRate: videoSampleRate
     property alias videoBitRate: videoBitRate
     property alias videoFrameRate: videoFrameRate
+    property alias videoInputField: videoInputField
+    property alias videoInputButton: videoInputButton
+    property alias videoOutputField: videoOutputField
+    property alias videoOutputButton: videoOutputButton
+    property alias playIcon: playIcon
+    property alias uploadIcon: uploadIcon
+    property alias ffmpegCommand: ffmpegCommand
+    property alias textInputFile: textInputFile
+    property alias textOutputFile: textOutputFile
+    property alias copyButton: copyButton
 
     FileDialog {
-        id: fileDialog
-        title: "Please choose a video file"
+        id: fileDialogInput
+        title: "Please choose a video input file"
+        folder: shortcuts.movies
+        nameFilters: [ "Video files (*.mp4 *.avi)", "All files (*)" ]
+        selectMultiple: false
+        Component.onCompleted: visible = false
+    }
+
+    FileDialog {
+        id: fileDialogOutput
+        title: "Please choose a video output file"
         folder: shortcuts.movies
         nameFilters: [ "Video files (*.mp4 *.avi)", "All files (*)" ]
         selectMultiple: false
@@ -57,14 +73,14 @@ Item {
             anchors.top: parent.top
 
             TextField {
-                id: textField1
+                id: videoInputField
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
                 placeholderText: qsTr("Enter video filename")
             }
 
             Button {
-                id: button1
+                id: videoInputButton
                 text: qsTr("Open Video...")
                 Layout.maximumWidth: 150
                 Layout.fillWidth: true
@@ -136,7 +152,7 @@ Item {
                 anchors.fill: parent
 
                 Image {
-                    id: image1
+                    id: playIcon
                     x: 310
                     y: 131
                     width: 200
@@ -156,7 +172,7 @@ Item {
                 }
 
                 Image {
-                    id: image2
+                    id: uploadIcon
                     x: 310
                     y: 131
                     width: 200
@@ -187,7 +203,7 @@ Item {
             id: control
             width: 780
             height: 40
-            wheelEnabled: false
+            enabled: false
             to: 1.0
             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
             Layout.fillWidth: true
@@ -277,8 +293,6 @@ Item {
 
         }
 
-
-
         RowLayout {
             id: rowLayout2
             width: 100
@@ -287,13 +301,13 @@ Item {
 
 
             TextField {
-                id: textField2
+                id: videoOutputField
                 placeholderText: qsTr("Name of output file")
                 Layout.fillWidth: true
             }
 
             Button {
-                id: button3
+                id: videoOutputButton
                 text: qsTr("Select Output File")
                 Layout.minimumWidth: 150
             }
@@ -301,20 +315,84 @@ Item {
 
         }
 
+        RowLayout {
+            id: rowLayout5
+            width: 100
+            height: 100
+            spacing: 10
 
-        TextEdit {
-            id: textEdit1
-            width: 80
-            height: 20
-            color: "#000000"
-            text: qsTr("$ ffmpeg ... do it dynamically")
-            selectionColor: "#ed0d0d"
+            TextField {
+                id: ffmpegCommand
+                text: qsTr("Choose both video input and output files");
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                font.family: "Consolas"
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                Layout.fillWidth: true
+                color: "#000000"
+                selectionColor: "#f44336"
+                font.pixelSize: 14
+                enabled: false
+
+                background: Rectangle {
+                    implicitHeight: 10
+                    color: "#FFFFFF"
+                    radius: 5
+                    opacity: 0.8
+                }
+            }
+
+            Button {
+                id: copyButton
+                text: qsTr("Copy")
+                enabled: false
+
+                ToolTip {
+                    id: toolTip
+                    text: qsTr("Copied in Clipboard !")
+                    visible: copyButton.pressed
+                    closePolicy: Popup.NoAutoClose
+                    transformOrigin: Popup.Bottom
+                    topMargin: 200.0
+
+                    background: Rectangle {
+                        color: "#000000"
+                        radius: 4
+                        opacity: 0.9
+                    }
+                }
+            }
+        }
+
+        Text {
+            id: textInfoForCopy
+            x: 99
+            y: 708
+            color: "#8b8b8b"
+            text: qsTr("On copy, <input file> and <output file> with be replaced with these values:")
             font.bold: true
-            horizontalAlignment: Text.AlignHCenter
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            anchors.horizontalCenter: item1.horizontalCenter
-            font.pixelSize: 16
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: textInputFile
+            x: 0
+            y: 738
+            color: "#8b8b8b"
+            text: qsTr("<input file> = Choose a video input file")
+            Layout.fillWidth: true
+            font.pixelSize: 12
+        }
+
+        Text {
+            id: textOutputFile
+            x: 8
+            y: 734
+            color: "#8b8b8b"
+            text: qsTr("<output file> = Choose a video output file")
+            Layout.fillWidth: true
+            font.pixelSize: 12
         }
 
 

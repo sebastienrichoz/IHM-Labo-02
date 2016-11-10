@@ -6,14 +6,49 @@ import QtMultimedia 5.6
 Page1Form {
 
     property int stepSize: 1000
+    property bool ffmpegCommandIsSelected : false
+    property bool isInputChoosed: false
+    property bool isOutputChoosed: false
 
+    /**
+      * FFMpeg command
+      */
+
+    copyButton.onPressed: {
+        console.log("copyButton.onPressed");
+        var ffmpegCommandStr = "ffmpeg -ss "
+                + spinboxStart.value
+                + " -i "
+                + videoInputField.getText(0, videoInputField.text.length)
+                + " -t "
+                + updateVideoDuration()
+                + " -c copy "
+                + videoOutputField.getText(0, videoOutputField.length)
+        _TestClass.copyButtonClicked(ffmpegCommandStr);
+    }
+
+    ffmpegCommand.onActiveFocusChanged: {
+        if (ffmpegCommandIsSelected) {
+            ffmpegCommand.undo()
+            ffmpegCommandIsSelected = false;
+        } else {
+            ffmpegCommand.select(2, ffmpegCommand.text.length)
+            ffmpegCommandIsSelected = true;
+            console.log("text selected");
+        }
+    }
 
     /**
       * Start and stop spinbox
       */
-
-    // TODO : gérer le problème des spinbox qui se réinitilisent mutuellement
-    // TODO : rendre impossible que la valeur de la spinboxstart soit supérieure à celle de spinboxstop et spinboxstop ne doit pas pouvoir etre inferieur a spinboxstart
+    // Fixing problem we were having with spinbox values : their value
+    // were set to the other spinbox "from" value when they lost focus
+    spinboxStart.onActiveFocusChanged: {
+        spinboxStart.value = parseInt(control.first.value * video.duration)
+    }
+    spinboxStop.onActiveFocusChanged: {
+        spinboxStop.value = parseInt(control.second.value * video.duration)
+    }
 
     spinboxStart.up.onPressedChanged: {
         console.log("spinboxStart.up.onPressedChanged");
@@ -66,7 +101,7 @@ Page1Form {
         video.seek(pos)
         spinboxStart.value = pos;
         video.pause()
-        image1.visible = true
+        playIcon.visible = true
         updateVideoDuration()
     }
 
@@ -76,7 +111,7 @@ Page1Form {
         video.seek(pos)
         spinboxStop.value = pos;
         video.pause()
-        image1.visible = true
+        playIcon.visible = true
         updateVideoDuration()
     }
 
@@ -87,34 +122,60 @@ Page1Form {
 
     video.onPositionChanged: {
         console.log("video.onPositionChanged")
-        videoPosition.text = msToTime(video.position) + "/" + msToTime(video.duration)
+        videoPosition.text = msToTime(video.position)
+                + "/"
+                + msToTime(video.duration)
+        updateFfmpegCommand()
+
+        spinboxStart.to = spinboxStop.value
+        spinboxStop.from = spinboxStart.value
     }
 
     mouseArea1.onClicked: {
         console.log("mouseArea1.onClicked")
         if (!video.hasVideo)
-            fileDialog.open()
+            fileDialogInput.open()
         else if (video.playbackState === MediaPlayer.PlayingState) {
             video.pause()
-            image1.visible = true
+            playIcon.visible = true
         }
         else {
             video.play()
-            image1.visible = false
+            playIcon.visible = false
         }
     }
 
-    button1.onClicked: {
-        console.log("button1.onClicked")
-        onClicked: fileDialog.open()
+    videoInputButton.onClicked: {
+        console.log("videoInputButton.onClicked")
+        fileDialogInput.open()
+    }
+
+    videoOutputButton.onClicked: {
+        console.log("videoOutputButton.onClicked")
+        fileDialogOutput.folder = fileDialogInput.folder ?
+                    fileDialogInput.folder : shortcuts.movies
+        fileDialogOutput.open()
     }
 
     video.onHasVideoChanged: {
         console.log("video.onHasVideoChanged")
         videoTitle.text = "Title: " + video.metaData.title;
-        videoSampleRate.text = "Sample Rate: " + video.metaData.sampleRate + " Hz";
-        videoBitRate.text = "Bit Rate: " + video.metaData.videoBitRate + " bit/s";
-        videoFrameRate.text = "Frame Rate: " + video.metaData.videoFrameRate + " FPS";
+
+        videoSampleRate.text = "Sample Rate: "
+                + video.metaData.sampleRate
+                + " Hz";
+
+        videoBitRate.text = "Bit Rate: "
+                + video.metaData.videoBitRate
+                + " bit/s";
+
+        videoFrameRate.text = "Frame Rate: "
+                + video.metaData.videoFrameRate
+                + " FPS";
+
+        videoPosition.text = msToTime(video.position)
+                + "/"
+                + msToTime(video.duration)
 
         control.first.value = 0.0;
         control.second.value = 1.0;
@@ -133,22 +194,66 @@ Page1Form {
             return msToTime(value);
         }
         BusyIndicator.running = false;
-        image1.visible = true;
+        playIcon.visible = true;
+        control.enabled = true;
+        updateFfmpegCommand();
     }
 
-    fileDialog.onAccepted: {
-        console.log("fileDialog.onAccepted")
-        image2.visible = false;
-        textField1.text = fileDialog.fileUrl
+    videoInputField.onTextChanged: {
+        if (videoInputField.text.length > 0) {
+            textInputFile.text = "<input file> = "
+                    + videoInputField.getText(0, videoInputField.text.length);
+            isInputChoosed = true;
+            if (isOutputChoosed)
+                copyButton.enabled = true;
+        } else {
+            textInputFile.text = "<input file> = Choose a video input file"
+            isInputChoosed = false;
+            copyButton.enabled = false;
+        }
+    }
+
+    videoOutputField.onTextChanged: {
+        if (videoOutputField.text.length > 0) {
+            textOutputFile.text = "<output file> = "
+                    + videoOutputField.getText(0, videoOutputField.text.length);
+            isOutputChoosed = true;
+            if (isInputChoosed)
+                copyButton.enabled = true;
+        } else {
+            textOutputFile.text = "<output file> = Choose a video output file"
+            isOutputChoosed = false;
+            copyButton.enabled = false;
+        }
+    }
+
+    fileDialogInput.onAccepted: {
+        console.log("fileDialogInput.onAccepted")
+        uploadIcon.visible = false;
+        videoInputField.text = _TestClass.getText(fileDialogInput.fileUrl, 8);
 
         // Load video
         BusyIndicator.running = true;
-        video.source = fileDialog.fileUrl
+        video.source = fileDialogInput.fileUrl
     }
 
-    fileDialog.onRejected: {
-        console.log("fileDialog.onRejected")
+    fileDialogInput.onRejected: {
+        console.log("fileDialogInput.onRejected")
     }
+
+    fileDialogOutput.onAccepted: {
+        console.log("fileDialogOutput.onAccepted")
+        videoOutputField.text = _TestClass.getText(fileDialogOutput.fileUrl, 8);
+    }
+
+    fileDialogOutput.onRejected: {
+        console.log("fileDialogOutput.onRejected")
+    }
+
+
+    /**
+      * functions
+      */
 
     function msToTime(duration) {
         var seconds = parseInt((duration/1000)%60)
@@ -163,8 +268,18 @@ Page1Form {
     }
 
     function updateVideoDuration() {
-        var duration = Math.round( (control.second.value - control.first.value) * video.duration);
+        var duration = Math.round( (control.second.value - control.first.value)
+                                  * video.duration);
         videoDuration.text = "Duration: " + msToTime(duration);
         return duration;
+    }
+
+    function updateFfmpegCommand() {
+        ffmpegCommand.text = "$ ffmpeg -ss "
+                + spinboxStart.value
+                + " -i <input file>"
+                + " -t "
+                + updateVideoDuration()
+                + " -c copy <output file>";
     }
 }

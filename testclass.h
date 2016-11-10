@@ -11,7 +11,8 @@ public:
     explicit TestClass(QObject *parent = 0);
 
 public slots:
-    void buttonClicked(const QString& in);
+    void copyButtonClicked(const QString& in);
+    QString getText(const QString& in, const int start);
 };
 
 #endif // TESTCLASS_H
