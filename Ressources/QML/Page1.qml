@@ -1,10 +1,10 @@
 /**
-  * @File Page.qml
-  * @Description This file handles and manages the events launched by
+  * @file Page1.qml
+  * @brief This file handles and manages the events launched by
   *               the components from Page1Form.qml
   *
-  * @Author Sébastien Richoz & Damien Rochat
-  * @Date 10th November 2016
+  * @author Sébastien Richoz & Damien Rochat
+  * @date 10th November 2016
   */
 
 import QtQuick 2.7
@@ -287,7 +287,6 @@ Page1Form {
         console.log("focus changed : " + currentVideoFolder);
         if (videoInputField.text != video.source) {
             video.source = videoInputField.text;
-            fileDialogInput.folder = videoInputField.text;
         }
     }
 

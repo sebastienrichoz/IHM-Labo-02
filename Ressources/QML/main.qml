@@ -1,3 +1,12 @@
+/**
+  * @file main.qml
+  * @brief This file is the starting point for our application. It contains
+  * the menu and initiates the content of the app.
+  *
+  * @author Sébastien Richoz & Damien Rochat
+  * @date 10th November 2016
+  */
+
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
@@ -19,7 +28,6 @@ ApplicationWindow {
     property color menuBorderColor: "#282828"
     property double menuBackgroundOpacity: 0.0
 
-    // TODO actions sur les boutons du menu
     header: ToolBar {
         height: 40
 

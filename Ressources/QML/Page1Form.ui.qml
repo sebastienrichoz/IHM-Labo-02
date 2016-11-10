@@ -1,3 +1,11 @@
+/**
+  * @file Page1Form.qml
+  * @brief This file handles everything about the design of the components. The
+  * interactions are handled in Page1.qml
+  *
+  * @author Sébastien Richoz & Damien Rochat
+  * @date 10th November 2016
+  */
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0

@@ -1,3 +1,12 @@
+/**
+  * @file main.cpp
+  * @brief Starting point for our application. This application is build
+  * with Qt Quick and uses Qt version 5.7
+  *
+  * @author Sébastien Richoz & Damien Rochat
+  * @date 10th November 2016
+  */
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQuickControls2>
