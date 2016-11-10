@@ -25,7 +25,8 @@ Page1Form {
       * FFMpeg command
       */
 
-    /** When the copy button is pressed, we store the ffmpeg command
+    /**
+      * When the copy button is pressed, we store the ffmpeg command
       * in the clipboard
       */
     copyButton.onPressed: {
@@ -54,6 +55,7 @@ Page1Form {
     /**
       * Start and stop spinbox
       */
+
     // Fixing problem we were having with spinbox values : their value
     // were set to the other spinbox "from" value when they lost focus
     spinboxStart.onActiveFocusChanged: {
@@ -63,6 +65,8 @@ Page1Form {
         spinboxStop.value = parseInt(control.second.value * video.duration);
     }
 
+    // Manage the changes of start and end points from the spinbox
+    // update the rangeslider and the preview of the video
     spinboxStart.up.onPressedChanged: {
         if (spinboxStart.value + stepSize > video.duration)
             video.seek(video.duration);
@@ -71,7 +75,6 @@ Page1Form {
         control.first.value = video.position / video.duration;
         updateVideoDuration();
     }
-
     spinboxStart.down.onPressedChanged: {
         if (spinboxStart.value - stepSize < 0)
             video.seek(0);
@@ -80,7 +83,6 @@ Page1Form {
         control.first.value = video.position / video.duration;
         updateVideoDuration();
     }
-
     spinboxStop.up.onPressedChanged: {
         if (spinboxStop.value + stepSize > video.duration)
             video.seek(video.duration);
@@ -89,7 +91,6 @@ Page1Form {
         control.second.value = video.position / video.duration;
         updateVideoDuration();
     }
-
     spinboxStop.down.onPressedChanged: {
         if (spinboxStop.value - stepSize < 0)
             video.seek(0);
@@ -104,6 +105,8 @@ Page1Form {
       * Cut control
       */
 
+    // Manage the changes of start and end points from slider
+    // update the spinbox and the preview of the video
     control.first.onPressedChanged: {
         var pos = parseInt(control.first.value * video.duration);
         video.seek(pos);
@@ -112,7 +115,6 @@ Page1Form {
         playIcon.visible = true;
         updateVideoDuration();
     }
-
     control.second.onPressedChanged: {
         var pos = parseInt(control.second.value * video.duration);
         video.seek(pos);
@@ -126,16 +128,18 @@ Page1Form {
     /**
       * Video
       */
-
+    // Handle output video errors
+    // Use a tmp video component to test if the output video if correct
+    // for example, it prevent to save the video has a .pdf file
     tempVideo.onStatusChanged: {
         var error = "<h2>Error - Invalid Media</h2><p>The output file is not recognized as a media.<p>";
         switch(tempVideo.status) {
-        case 7:
+        case 7: // Format error
             textAreaError.text = error;
             popupError.open();
             videoOutputField.text = "";
             break;
-        case 8:
+        case 8: // Unknow error
             textAreaError.text = error;
             popupError.open();
             videoOutputField.text = "";
@@ -144,18 +148,19 @@ Page1Form {
         }
     }
 
+    // Handle input video errors
     video.onStatusChanged: {
         switch(video.status) {
-        case 3:
+        case 3: // No error
             errorInputFile = false;
             break;
-        case 7:
+        case 7:  // Format error
             textAreaError.text = "<h2>Error - Invalid Media</h2><p>The media cannot be played.<p>";
             popupError.open();
             videoInputField.text = "";
             errorInputFile = true;
             break;
-        case 8:
+        case 8: // Unknow error
             textAreaError.text = "<h2>Error - Unknown Status</h2><p>The status of the file is not known as a media.<p>";
             popupError.open();
             videoInputField.text = "";
@@ -164,6 +169,7 @@ Page1Form {
         }
     }
 
+    // Update the new video time and the ffmpeg command on change
     video.onPositionChanged: {
         videoPosition.text = msToTime(video.position)
                 + "/"
@@ -174,6 +180,7 @@ Page1Form {
         spinboxStop.from = spinboxStart.value;
     }
 
+    // Choose and input video
     mouseArea1.onClicked: {
         if (!video.hasVideo) {
             fileDialogInput.open();
@@ -186,17 +193,19 @@ Page1Form {
             playIcon.visible = false;
         }
     }
-
     videoInputButton.onClicked: {
         fileDialogInput.open();
     }
 
+    // Choose and output video
     videoOutputButton.onClicked: {
         if (fileDialogInput.folder && !errorInputFile)
             fileDialogOutput.folder = fileDialogInput.folder;
         fileDialogOutput.open();
     }
 
+    // Update the video informations when loaded
+    // And init parameters
     video.onHasVideoChanged: {
         videoTitle.text = "Title: " + video.metaData.title;
 
@@ -240,6 +249,8 @@ Page1Form {
         updateFfmpegCommand();
     }
 
+    // Listen for text change in the input field
+    // Enable or disable the parameters
     videoInputField.onTextChanged: {
         if (videoInputField.text.length > 0) {
             textInputFile.text = "<input file>   = "
@@ -254,6 +265,8 @@ Page1Form {
         }
     }
 
+    // Listen for text change in the output field
+    // Enable or disable the parameters
     videoOutputField.onTextChanged: {
         if (videoOutputField.text.length > 0) {
             textOutputFile.text = "<output file> = "
@@ -268,6 +281,7 @@ Page1Form {
         }
     }
 
+    // Handle open input video
     fileDialogInput.onAccepted: {
         uploadIcon.visible = false;
         videoInputField.text = _TestClass.getText(fileDialogInput.fileUrl, 8);
@@ -281,6 +295,7 @@ Page1Form {
 //        console.log("fileDialogInput.onRejected")
 //    }
 
+    // Handle open output video
     fileDialogOutput.onAccepted: {
         videoOutputField.text = _TestClass.getText(fileDialogOutput.fileUrl, 8);
         tempVideo.source = fileDialogOutput.fileUrl;
@@ -331,6 +346,7 @@ Page1Form {
       * functions
       */
 
+    // Convert time in ms to readable text
     function msToTime(duration) {
         var seconds = parseInt((duration/1000)%60)
             , minutes = parseInt((duration/(1000*60))%60)
@@ -343,6 +359,7 @@ Page1Form {
         return hours + ":" + minutes + ":" + seconds;
     }
 
+    // Compute the new video duration
     function updateVideoDuration() {
         var duration = Math.round( (control.second.value - control.first.value)
                                   * video.duration);
@@ -350,6 +367,7 @@ Page1Form {
         return duration;
     }
 
+    // Update the command
     function updateFfmpegCommand() {
         ffmpegCommand.text = "$ ffmpeg -ss "
                 + spinboxStart.value
