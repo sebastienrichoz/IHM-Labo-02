@@ -113,6 +113,15 @@
 	 	\item La commande ffmpeg résultante du découpage vidéo avec les fichiers d'entrée et de sortie. Les temps y sont affichés en millisecondes. Le boutons "COPY" est désactivé tant que les deux fichiers d'entrée et de sorties ne sont pas choisis.
 	 	\item L'information "On copy, ..." expliquant à l'utilisateur que c'est bien la commande complète qui va être copiée.
 	 \end{enumerate}
+ 
+	\part*{Erreurs gérées}
+		Voici la liste des erreurs que l'application traitent actuellement :
+		\begin{itemize}
+			\item Le fichier d'entrée n'existe pas ou son format n'est pas supporté.
+			\item Le fichier de sortie n'est pas correct.
+			\item La fin de la coupure doit se trouver après son commencement.
+			\item Le bouton de copie de la commande dans le presse papier ne peut être utilisé que lorsque une vidéo d'entrée et une de sortie sont spécifiées.
+		\end{itemize}
 
 	\part*{Améliorations}
 		Actuellement, la visualisation de la vidéo s'adapte en fonction des configurations de l'utilisateurs. Il serait utile d'ajouter un nouveau contrôleur afin de pouvoir se déplacer dans la vidéo sans que cela n'influence les paramètres de coupe. \\
