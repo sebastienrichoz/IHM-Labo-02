@@ -1,3 +1,12 @@
+/**
+  * @File Page.qml
+  * @Description This file handles and manages the events launched by
+  *               the components from Page1Form.qml
+  *
+  * @Author Sébastien Richoz & Damien Rochat
+  * @Date 10th November 2016
+  */
+
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Dialogs 1.2
@@ -9,13 +18,17 @@ Page1Form {
     property bool ffmpegCommandIsSelected : false
     property bool isInputChoosed: false
     property bool isOutputChoosed: false
+    property bool errorInputFile: false
+    property string currentVideoFolder: ""
 
     /**
       * FFMpeg command
       */
 
+    /** When the copy button is pressed, we store the ffmpeg command
+      * in the clipboard
+      */
     copyButton.onPressed: {
-        console.log("copyButton.onPressed");
         var ffmpegCommandStr = "ffmpeg -ss "
                 + spinboxStart.value
                 + " -i "
@@ -23,18 +36,18 @@ Page1Form {
                 + " -t "
                 + updateVideoDuration()
                 + " -c copy "
-                + videoOutputField.getText(0, videoOutputField.length)
+                + videoOutputField.getText(0, videoOutputField.length);
         _TestClass.copyButtonClicked(ffmpegCommandStr);
     }
 
+    //
     ffmpegCommand.onActiveFocusChanged: {
         if (ffmpegCommandIsSelected) {
-            ffmpegCommand.undo()
+            ffmpegCommand.undo();
             ffmpegCommandIsSelected = false;
         } else {
-            ffmpegCommand.select(2, ffmpegCommand.text.length)
+            ffmpegCommand.select(2, ffmpegCommand.text.length);
             ffmpegCommandIsSelected = true;
-            console.log("text selected");
         }
     }
 
@@ -44,50 +57,46 @@ Page1Form {
     // Fixing problem we were having with spinbox values : their value
     // were set to the other spinbox "from" value when they lost focus
     spinboxStart.onActiveFocusChanged: {
-        spinboxStart.value = parseInt(control.first.value * video.duration)
+        spinboxStart.value = parseInt(control.first.value * video.duration);
     }
     spinboxStop.onActiveFocusChanged: {
-        spinboxStop.value = parseInt(control.second.value * video.duration)
+        spinboxStop.value = parseInt(control.second.value * video.duration);
     }
 
     spinboxStart.up.onPressedChanged: {
-        console.log("spinboxStart.up.onPressedChanged");
         if (spinboxStart.value + stepSize > video.duration)
-            video.seek(video.duration)
+            video.seek(video.duration);
         else
-            video.seek(spinboxStart.value + stepSize)
-        control.first.value = video.position / video.duration
-        updateVideoDuration()
+            video.seek(spinboxStart.value + stepSize);
+        control.first.value = video.position / video.duration;
+        updateVideoDuration();
     }
 
     spinboxStart.down.onPressedChanged: {
-        console.log("spinboxStart.down.onPressedChanged");
         if (spinboxStart.value - stepSize < 0)
-            video.seek(0)
+            video.seek(0);
         else
-            video.seek(spinboxStart.value - stepSize)
-        control.first.value = video.position / video.duration
-        updateVideoDuration()
+            video.seek(spinboxStart.value - stepSize);
+        control.first.value = video.position / video.duration;
+        updateVideoDuration();
     }
 
     spinboxStop.up.onPressedChanged: {
-        console.log("spinboxStop.up.onPressedChanged");
         if (spinboxStop.value + stepSize > video.duration)
-            video.seek(video.duration)
+            video.seek(video.duration);
         else
-            video.seek(spinboxStop.value + stepSize)
-        control.second.value = video.position / video.duration
-        updateVideoDuration()
+            video.seek(spinboxStop.value + stepSize);
+        control.second.value = video.position / video.duration;
+        updateVideoDuration();
     }
 
     spinboxStop.down.onPressedChanged: {
-        console.log("spinboxStop.down.onPressedChanged");
         if (spinboxStop.value - stepSize < 0)
-            video.seek(0)
+            video.seek(0);
         else
-            video.seek(spinboxStop.value - stepSize)
-        control.second.value = video.position / video.duration
-        updateVideoDuration()
+            video.seek(spinboxStop.value - stepSize);
+        control.second.value = video.position / video.duration;
+        updateVideoDuration();
     }
 
 
@@ -96,23 +105,21 @@ Page1Form {
       */
 
     control.first.onPressedChanged: {
-        console.log("control.first.onPressedChanged")
-        var pos = parseInt(control.first.value * video.duration)
-        video.seek(pos)
+        var pos = parseInt(control.first.value * video.duration);
+        video.seek(pos);
         spinboxStart.value = pos;
-        video.pause()
-        playIcon.visible = true
-        updateVideoDuration()
+        video.pause();
+        playIcon.visible = true;
+        updateVideoDuration();
     }
 
     control.second.onPressedChanged: {
-        console.log("control.second.onPressedChanged")
-        var pos = parseInt(control.second.value * video.duration)
-        video.seek(pos)
+        var pos = parseInt(control.second.value * video.duration);
+        video.seek(pos);
         spinboxStop.value = pos;
-        video.pause()
-        playIcon.visible = true
-        updateVideoDuration()
+        video.pause();
+        playIcon.visible = true;
+        updateVideoDuration();
     }
 
 
@@ -120,59 +127,77 @@ Page1Form {
       * Video
       */
 
-    video.onStatusChanged: {
-        console.log("video status: " + video.status)
-        switch(video.status) {
+    tempVideo.onStatusChanged: {
+        var error = "<h2>Error - Invalid Media</h2><p>The output file is not recognized as a media.<p>";
+        switch(tempVideo.status) {
         case 7:
-            textAreaError.text = "<h2>Error - Invalid Media</h2><p>The media cannot be played.<p>"
-            popupError.open()
+            textAreaError.text = error;
+            popupError.open();
+            videoOutputField.text = "";
             break;
         case 8:
-            textAreaError.text = "<h2>Error - Unknown Status</h2><p>The status of the file is not known as a media.<p>"
-            popupError.open()
+            textAreaError.text = error;
+            popupError.open();
+            videoOutputField.text = "";
+            errorInputFile = true;
+            break;
+        }
+    }
+
+    video.onStatusChanged: {
+        switch(video.status) {
+        case 3:
+            errorInputFile = false;
+            break;
+        case 7:
+            textAreaError.text = "<h2>Error - Invalid Media</h2><p>The media cannot be played.<p>";
+            popupError.open();
+            videoInputField.text = "";
+            errorInputFile = true;
+            break;
+        case 8:
+            textAreaError.text = "<h2>Error - Unknown Status</h2><p>The status of the file is not known as a media.<p>";
+            popupError.open();
+            videoInputField.text = "";
+            errorInputFile = true;
             break;
         }
     }
 
     video.onPositionChanged: {
-        console.log("video.onPositionChanged")
         videoPosition.text = msToTime(video.position)
                 + "/"
-                + msToTime(video.duration)
-        updateFfmpegCommand()
+                + msToTime(video.duration);
+        updateFfmpegCommand();
 
-        spinboxStart.to = spinboxStop.value
-        spinboxStop.from = spinboxStart.value
+        spinboxStart.to = spinboxStop.value;
+        spinboxStop.from = spinboxStart.value;
     }
 
     mouseArea1.onClicked: {
-        console.log("mouseArea1.onClicked")
-        if (!video.hasVideo)
-            fileDialogInput.open()
-        else if (video.playbackState === MediaPlayer.PlayingState) {
-            video.pause()
-            playIcon.visible = true
+        if (!video.hasVideo) {
+            fileDialogInput.open();
+        } else if (video.playbackState === MediaPlayer.PlayingState) {
+            video.pause();
+            playIcon.visible = true;
         }
         else {
-            video.play()
-            playIcon.visible = false
+            video.play();
+            playIcon.visible = false;
         }
     }
 
     videoInputButton.onClicked: {
-        console.log("videoInputButton.onClicked")
-        fileDialogInput.open()
+        fileDialogInput.open();
     }
 
     videoOutputButton.onClicked: {
-        console.log("videoOutputButton.onClicked")
-        fileDialogOutput.folder = fileDialogInput.folder ?
-                    fileDialogInput.folder : shortcuts.movies
-        fileDialogOutput.open()
+        if (fileDialogInput.folder && !errorInputFile)
+            fileDialogOutput.folder = fileDialogInput.folder;
+        fileDialogOutput.open();
     }
 
     video.onHasVideoChanged: {
-        console.log("video.onHasVideoChanged")
         videoTitle.text = "Title: " + video.metaData.title;
 
         videoSampleRate.text = "Sample Rate: "
@@ -189,11 +214,13 @@ Page1Form {
 
         videoPosition.text = msToTime(video.position)
                 + "/"
-                + msToTime(video.duration)
+                + msToTime(video.duration);
+
+        fileDialogInput.folder = currentVideoFolder;
 
         control.first.value = 0.0;
         control.second.value = 1.0;
-        var duration = updateVideoDuration()
+        var duration = updateVideoDuration();
         spinboxStart.to = duration;
         spinboxStop.to = duration;
         spinboxStop.value = duration;
@@ -221,7 +248,7 @@ Page1Form {
             if (isOutputChoosed)
                 copyButton.enabled = true;
         } else {
-            textInputFile.text = "<input file>   = Choose a video input file"
+            textInputFile.text = "<input file>   = Choose a video input file";
             isInputChoosed = false;
             copyButton.enabled = false;
         }
@@ -235,34 +262,34 @@ Page1Form {
             if (isInputChoosed)
                 copyButton.enabled = true;
         } else {
-            textOutputFile.text = "<output file> = Choose a video output file"
+            textOutputFile.text = "<output file> = Choose a video output file";
             isOutputChoosed = false;
             copyButton.enabled = false;
         }
     }
 
     fileDialogInput.onAccepted: {
-        console.log("fileDialogInput.onAccepted")
         uploadIcon.visible = false;
         videoInputField.text = _TestClass.getText(fileDialogInput.fileUrl, 8);
-
+        currentVideoFolder = fileDialogInput.fileUrl
         // Load video
         BusyIndicator.running = true;
-        video.source = fileDialogInput.fileUrl
+        video.source = fileDialogInput.fileUrl;
     }
 
-    fileDialogInput.onRejected: {
-        console.log("fileDialogInput.onRejected")
-    }
+//    fileDialogInput.onRejected: {
+//        console.log("fileDialogInput.onRejected")
+//    }
 
     fileDialogOutput.onAccepted: {
-        console.log("fileDialogOutput.onAccepted")
         videoOutputField.text = _TestClass.getText(fileDialogOutput.fileUrl, 8);
+        tempVideo.source = fileDialogOutput.fileUrl;
     }
 
-    fileDialogOutput.onRejected: {
-        console.log("fileDialogOutput.onRejected")
-    }
+//    fileDialogOutput.onRejected: {
+//        console.log("fileDialogOutput.onRejected")
+//    }
+
 
     /**
       * Popup for errors
@@ -278,10 +305,6 @@ Page1Form {
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         opacity: 0.8
-
-        onClosed: {
-            videoInputField.text = ""
-        }
 
         TextArea {
             id: textAreaError
@@ -302,6 +325,7 @@ Page1Form {
             enabled: false
         }
     }
+
 
     /**
       * functions

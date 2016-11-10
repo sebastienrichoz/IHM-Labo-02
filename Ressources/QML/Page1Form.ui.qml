@@ -12,6 +12,7 @@ Item {
     property alias control: control
     property alias mouseArea1: mouseArea1
     property alias video: video
+    property alias tempVideo: tempVideo
     property alias fileDialogInput: fileDialogInput
     property alias fileDialogOutput: fileDialogOutput
     property alias videoDuration: videoDuration
@@ -76,7 +77,7 @@ Item {
                 id: videoInputField
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
-                placeholderText: qsTr("Enter video filename")
+                placeholderText: qsTr("Enter video input filename")
             }
 
             Button {
@@ -133,6 +134,10 @@ Item {
         }
 
         Video {
+            id: tempVideo
+        }
+
+        Video {
             id: video
             z: 2
             width: 346
@@ -184,12 +189,6 @@ Item {
                     source: "../img/upload-video.png"
                 }
             }
-
-
-            //            focus: true
-            //            Keys.onSpacePressed: video.playbackState == MediaPlayer.PlayingState ? video.pause() : video.play()
-            //            Keys.onLeftPressed: video.seek(video.position - 5000)
-            //            Keys.onRightPressed: video.seek(video.position + 5000)
         }
 
         Text {
@@ -302,7 +301,7 @@ Item {
 
             TextField {
                 id: videoOutputField
-                placeholderText: qsTr("Name of output file")
+                placeholderText: qsTr("Enter video output filename")
                 Layout.fillWidth: true
             }
 

@@ -60,7 +60,7 @@ ApplicationWindow {
                     id: fileMenu
                     background: Rectangle {
                         implicitWidth: 100
-                        implicitHeight: 50
+                        implicitHeight: 40
                         color: "#4b4b4b"
                         opacity: 0.6
                         layer.enabled: true
@@ -116,7 +116,7 @@ ApplicationWindow {
                     id: helpMenu
                     background: Rectangle {
                         implicitWidth: 100
-                        implicitHeight: 80
+                        implicitHeight: 40
                         color: "#4b4b4b"
                         opacity: 0.6
                         layer.enabled: true
@@ -140,7 +140,7 @@ ApplicationWindow {
                             x: (appWindow.width - textArea1.width) / 3
                             y: (appWindow.height - textArea1.height) / 3
                             width: 400
-                            height: 300
+                            height: 150
                             modal: true
                             focus: true
                             closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
