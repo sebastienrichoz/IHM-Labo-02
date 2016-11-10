@@ -3,7 +3,7 @@ QT += qml quick quickcontrols2 gui widgets
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    testclass.cpp
+    utils.cpp
 
 RESOURCES += qml.qrc
 
@@ -16,4 +16,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    testclass.h
+    utils.h

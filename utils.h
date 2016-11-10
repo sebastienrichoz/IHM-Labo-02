@@ -4,11 +4,11 @@
 #include <QDebug>
 #include <QObject>
 
-class TestClass : public QObject
+class Utils : public QObject
 {
     Q_OBJECT
 public:
-    explicit TestClass(QObject *parent = 0);
+    explicit Utils(QObject *parent = 0);
 
 public slots:
     void copyButtonClicked(const QString& in);

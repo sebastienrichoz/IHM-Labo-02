@@ -3,7 +3,7 @@
 #include <QtQuickControls2>
 #include <QQuickStyle>
 
-#include "testclass.h"
+#include "utils.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,10 +12,10 @@ int main(int argc, char *argv[])
 
     QQuickStyle::setStyle("Material");
 
-    TestClass myClass;  // A class containing my functions
+    Utils utilities;  // A class containing my functions
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("_TestClass", &myClass);
+    engine.rootContext()->setContextProperty("UtilityClass", &utilities);
     engine.load(QUrl(QLatin1String("qrc:/Ressources/QML/main.qml")));
 
     return app.exec();

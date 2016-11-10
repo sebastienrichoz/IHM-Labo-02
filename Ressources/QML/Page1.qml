@@ -34,7 +34,7 @@ Page1Form {
                 + updateVideoDuration()
                 + " -c copy "
                 + videoOutputField.getText(0, videoOutputField.length);
-        _TestClass.copyButtonClicked(ffmpegCommandStr);
+        UtilityClass.copyButtonClicked(ffmpegCommandStr);
     }
 
     ffmpegCommand.onActiveFocusChanged: {
@@ -279,7 +279,7 @@ Page1Form {
     // Handle open input video
     fileDialogInput.onAccepted: {
         uploadIcon.visible = false;
-        videoInputField.text = _TestClass.getText(fileDialogInput.fileUrl, 8);
+        videoInputField.text = UtilityClass.getText(fileDialogInput.fileUrl, 8);
         currentVideoFolder = fileDialogInput.fileUrl
         // Load video
         BusyIndicator.running = true;
@@ -292,7 +292,7 @@ Page1Form {
 
     // Handle open output video
     fileDialogOutput.onAccepted: {
-        videoOutputField.text = _TestClass.getText(fileDialogOutput.fileUrl, 8);
+        videoOutputField.text = UtilityClass.getText(fileDialogOutput.fileUrl, 8);
         tempVideo.source = fileDialogOutput.fileUrl;
     }
 
