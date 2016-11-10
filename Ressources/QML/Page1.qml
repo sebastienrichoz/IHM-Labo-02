@@ -19,7 +19,7 @@ Page1Form {
     property bool isInputChoosed: false
     property bool isOutputChoosed: false
     property bool errorInputFile: false
-    property string currentVideoFolder: ""
+    property string currentVideoFolder: fileDialogInput.folder
 
     /**
       * FFMpeg command
@@ -148,20 +148,26 @@ Page1Form {
         switch(video.status) {
         case 3: // No error
             errorInputFile = false;
+            uploadIcon.visible = false;
             break;
         case 7:  // Format error
             textAreaError.text = "<h2>Error - Invalid Media</h2><p>The media cannot be played.<p>";
             popupError.open();
             videoInputField.text = "";
+            uploadIcon.visible = true;
+            playIcon.visible = false;
             errorInputFile = true;
             break;
         case 8: // Unknow error
             textAreaError.text = "<h2>Error - Unknown Status</h2><p>The status of the file is not known as a media.<p>";
             popupError.open();
             videoInputField.text = "";
+            uploadIcon.visible = true;
+            playIcon.visible = false;
             errorInputFile = true;
             break;
         }
+        currentVideoFolder = fileDialogInput.folder;
     }
 
     // Update the new video time and the ffmpeg command on change
@@ -276,6 +282,15 @@ Page1Form {
         }
     }
 
+    // Handle open input video from textfield
+    videoInputField.onFocusChanged: {
+        console.log("focus changed : " + currentVideoFolder);
+        if (videoInputField.text != video.source) {
+            video.source = videoInputField.text;
+            fileDialogInput.folder = videoInputField.text;
+        }
+    }
+
     // Handle open input video
     fileDialogInput.onAccepted: {
         uploadIcon.visible = false;
@@ -286,19 +301,11 @@ Page1Form {
         video.source = fileDialogInput.fileUrl;
     }
 
-//    fileDialogInput.onRejected: {
-//        console.log("fileDialogInput.onRejected")
-//    }
-
     // Handle open output video
     fileDialogOutput.onAccepted: {
         videoOutputField.text = UtilityClass.getText(fileDialogOutput.fileUrl, 8);
         tempVideo.source = fileDialogOutput.fileUrl;
     }
-
-//    fileDialogOutput.onRejected: {
-//        console.log("fileDialogOutput.onRejected")
-//    }
 
 
     /**
