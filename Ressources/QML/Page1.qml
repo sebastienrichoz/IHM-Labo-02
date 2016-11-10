@@ -25,9 +25,6 @@ Page1Form {
       * FFMpeg command
       */
 
-    /** When the copy button is pressed, we store the ffmpeg command
-      * in the clipboard
-      */
     copyButton.onPressed: {
         var ffmpegCommandStr = "ffmpeg -ss "
                 + spinboxStart.value
@@ -40,7 +37,6 @@ Page1Form {
         _TestClass.copyButtonClicked(ffmpegCommandStr);
     }
 
-    //
     ffmpegCommand.onActiveFocusChanged: {
         if (ffmpegCommandIsSelected) {
             ffmpegCommand.undo();

@@ -95,12 +95,29 @@
 		 
 		 Les composants suivants permettent de définir la coupure que l'ont souhaite. Deux manières sont proposées à l'utilisateur, soit en passant par le "double slider" ou alors en passant par les boutons \textbf{plus} et \textbf{moins} respectifs pour modifier le début ou la fin de la vidéo. La visualisation de la vidéo est automatiquement mise à jour afin que l'utilisateur puisse être le plus précis possible. La durée de la vidéo résultante est également affichée, ce qui peut être utile dans le cas où une personne a une durée limite. \\
 		 
-		 La troisième étape pour l'utilisateur est de retrouver la commande ffmpeg qui lui permettra de couper sa vidéo. Avec les chemins absolus vers les vidéos, la commande devenait beaucoup trop grand à afficher, nous avons donc choisi de les masquer dans la commande, mais avons mis en place un bouton permettant de copier la commande complète dans le presse papier de l'utilisateur.
+		 La troisième étape pour l'utilisateur est de retrouver la commande ffmpeg qui lui permettra de couper sa vidéo. Avec les chemins absolus vers les vidéos, la commande devenait beaucoup trop grande à afficher, nous avons donc choisi de les masquer dans la commande, mais avons mis en place un bouton permettant de copier la commande complète dans le presse papier de l'utilisateur. Pour ne pas perturber l'utilisateur, nous lui informons que ces chemins relatifs sont bel et bien copiés au moyen d'un texte explicatif en dessous de la commande, et lui affichons explicitement ces chemins.
+		 
+		 \begin{center}
+		 	\makebox[\textwidth]{\includegraphics[width=\textwidth]{screenshot.PNG}}
+		 \end{center}
+	 \begin{enumerate}
+	 	\item Menu de l'application
+	 	\item Champ texte permettant d'éditer le chemin de la vidéo et bouton OPEN VIDEO... pour l'ouvrir à partir du navigateur de fichier natif au système d'exploitation
+	 	\item Informations sur la vidéo: Titre, Nombre de bit par seconde, Nombre d'images par seconde, Taux d'échantillonnage
+	 	\item écran vidéo : lorsqu'il n'y a pas de vidéo, une icône cliquable est affichée pour en charger une. Lorsqu'il y a une vidéo, l'icône play ci-dessus est affiché pour jouer la vidéo. Une fois la vidéo en pause, l'icône play s'affiche à nouveau.
+	 	\item La position actuelle de la vidéo par rapport à sa durée totale exprimé ici selon le format hh:mm:ss/hh:mm:ss
+	 	\item Le "Double Slider" permettant de sélectionner une partie de la vidéo. La partie en rouge met en évidence la portion sélectionnée. Les deux points sont "drag'n'dropable" et permettent de modifier cette portion.
+	 	\item Les deux champs spécifiant la position de départ et de fin de la vidéo à séquencer. En interagissant avec les boutons + et -, le double slider et la vidéo s'adaptent.
+	 	\item Ici figure la durée totale de la portion sélectionnée
+	 	\item Le champ permet de saisir un fichier de sortie, alors que le bouton "SELECT OUTPUT FILE" permet d'ouvrir l'explorateur de fichier natif à l'OS pour en chercher un.
+	 	\item La commande ffmpeg résultante du découpage vidéo avec les fichiers d'entrée et de sortie. Les temps y sont affichés en millisecondes. Le boutons "COPY" est désactivé tant que les deux fichiers d'entrée et de sorties ne sont pas choisis.
+	 	\item L'information "On copy, ..." expliquant à l'utilisateur que c'est bien la commande complète qui va être copiée.
+	 \end{enumerate}
 
 	\part*{Améliorations}
 		Actuellement, la visualisation de la vidéo s'adapte en fonction des configurations de l'utilisateurs. Il serait utile d'ajouter un nouveau contrôleur afin de pouvoir se déplacer dans la vidéo sans que cela n'influence les paramètres de coupe. \\
 		
-		Une autre chose est que les temps utilisés afin de définir le début et la fin de la vidéo vont à la seconde près. Alors qu'une vidéo contient encore plusieurs images par secondes. Cette précision pourrait être améliorée. \\
+		Une autre chose est que les temps utilisés afin de définir le début et la fin de la vidéo vont à la seconde près. Alors qu'une vidéo contient encore plusieurs images par secondes. Cette précision pourrait être améliorée en se basant sur le FPS (Frame Per Second) de chaque vidéo. \\
 		
 		Certains format de vidéo ne sont pas pris en charge. Les modules Qt Quick sont encore très récents et ceux-ci vont être améliorés à l'avenir.
 	
