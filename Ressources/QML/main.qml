@@ -3,8 +3,10 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import QtQuick.Controls.Material 2.0
 import QtGraphicalEffects 1.0
+import QtQuick.Window 2.0
 
 ApplicationWindow {
+    id: appWindow
     visible: true
     Material.theme: Material.Dark
     Material.primary: Material.Red
@@ -130,10 +132,45 @@ ApplicationWindow {
                     y: helpButton.height
 
                     MenuItem {
-                        text: qsTr("Help")
-                    }
-                    MenuItem {
                         text: qsTr("About")
+                        onClicked: popup.open()
+
+                        Popup {
+                            id: popup
+                            x: (appWindow.width - textArea1.width) / 3
+                            y: (appWindow.height - textArea1.height) / 3
+                            width: 400
+                            height: 300
+                            modal: true
+                            focus: true
+                            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                            opacity: 0.8
+
+                                TextArea {
+                                    id: textArea1
+                                    x: 133
+                                    y: 270
+                                    width: 350
+                                    height: 200
+                                    color: "#FFFFFF"
+                                    textFormat: TextEdit.RichText
+                                    text: qsTr("
+    <h2>Version 1.0</h2>
+    <h4>10<sup>th</sup> November 2016</h4>
+    <p>Created by <i>Sébastien Richoz & Damien Rochat</i></p>
+    <p><b>Video cutter</b> helps you to edit video files.
+    It generates an ffmpeg command to trim a video.</p>
+    ")
+                                    anchors.verticalCenterOffset: 0
+                                    anchors.horizontalCenterOffset: 0
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    verticalAlignment: Text.AlignVCenter
+                                    horizontalAlignment: Text.AlignHCenter
+                                    wrapMode: Text.WordWrap
+                                    enabled: false
+                                }
+                        }
                     }
                 }
             }

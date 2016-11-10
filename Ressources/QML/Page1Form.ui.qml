@@ -354,6 +354,7 @@ Item {
                     closePolicy: Popup.NoAutoClose
                     transformOrigin: Popup.Bottom
                     topMargin: 200.0
+                    delay: 3000
 
                     background: Rectangle {
                         color: "#000000"
@@ -380,7 +381,7 @@ Item {
             x: 0
             y: 738
             color: "#8b8b8b"
-            text: qsTr("<input file> = Choose a video input file")
+            text: qsTr("<input file>   = Choose a video input file")
             Layout.fillWidth: true
             font.pixelSize: 12
         }
@@ -395,9 +396,19 @@ Item {
             font.pixelSize: 12
         }
 
-
-
-
+        Popup {
+            id: popup
+            x: 100
+            y: 100
+            width: 200
+            height: 300
+            modal: true
+            focus: true
+            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+            Text {
+                id: text1
+                text: qsTr("text")
+            }
+        }
     }
-
 }

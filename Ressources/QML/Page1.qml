@@ -120,6 +120,20 @@ Page1Form {
       * Video
       */
 
+    video.onStatusChanged: {
+        console.log("video status: " + video.status)
+        switch(video.status) {
+        case 7:
+            textAreaError.text = "<h2>Error - Invalid Media</h2><p>The media cannot be played.<p>"
+            popupError.open()
+            break;
+        case 8:
+            textAreaError.text = "<h2>Error - Unknown Status</h2><p>The status of the file is not known as a media.<p>"
+            popupError.open()
+            break;
+        }
+    }
+
     video.onPositionChanged: {
         console.log("video.onPositionChanged")
         videoPosition.text = msToTime(video.position)
@@ -201,13 +215,13 @@ Page1Form {
 
     videoInputField.onTextChanged: {
         if (videoInputField.text.length > 0) {
-            textInputFile.text = "<input file> = "
+            textInputFile.text = "<input file>   = "
                     + videoInputField.getText(0, videoInputField.text.length);
             isInputChoosed = true;
             if (isOutputChoosed)
                 copyButton.enabled = true;
         } else {
-            textInputFile.text = "<input file> = Choose a video input file"
+            textInputFile.text = "<input file>   = Choose a video input file"
             isInputChoosed = false;
             copyButton.enabled = false;
         }
@@ -250,6 +264,44 @@ Page1Form {
         console.log("fileDialogOutput.onRejected")
     }
 
+    /**
+      * Popup for errors
+      */
+
+    Popup {
+        id: popupError
+        x: (parent.width - textAreaError.width) / 2
+        y: (parent.height - textAreaError.height) / 3
+        width: 400
+        height: 100
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        opacity: 0.8
+
+        onClosed: {
+            videoInputField.text = ""
+        }
+
+        TextArea {
+            id: textAreaError
+            x: 133
+            y: 270
+            width: 350
+            height: 100
+            color: "#F44336"
+            textFormat: TextEdit.RichText
+            text: qsTr("<h2>Error</h2>")
+            anchors.verticalCenterOffset: 0
+            anchors.horizontalCenterOffset: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            enabled: false
+        }
+    }
 
     /**
       * functions
